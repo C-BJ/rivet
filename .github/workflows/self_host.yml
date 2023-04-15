@@ -2,13 +2,19 @@ name: Self-hosted compiler
 
 on:
   push:
-    paths: ['lib/**.ri', 'rivetc/**.py', 'cmd/**.ri']
-    branches: [main]
-  pull_request:
-    paths: ['lib/**.ri', 'rivetc/**.py', 'cmd/**.ri']
-    types: [opened, synchronize]
-
+  
 jobs:
+  windows-clang:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Compile self-hosted compiler
+        run: |
+          python3 rivetc -bc clang -o rivet cmd/
+          ./rivet version
+          ./rivet build cmd/
+
   ubuntu-clang:
     runs-on: ubuntu-latest
     steps:
@@ -19,7 +25,7 @@ jobs:
           python3 rivetc -bc clang -o rivet cmd/
           ./rivet version
           ./rivet build cmd/
-
+  
   ubuntu-gcc:
     runs-on: ubuntu-latest
     steps:
